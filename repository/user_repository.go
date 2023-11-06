@@ -8,9 +8,9 @@ import (
 )
 
 type UserRepository interface {
-	Save(ctx context.Context, tx *sql.Tx, user domain.User) domain.User
+	Create(ctx context.Context, tx *sql.Tx, user domain.User) domain.User
 	Update(ctx context.Context, tx *sql.Tx, user domain.User) domain.User
-	Delete(ctx context.Context, tx *sql.Tx, id string)
-	FindById(ctx context.Context, tx *sql.Tx, id string) domain.User
+	Delete(ctx context.Context, tx *sql.Tx, user domain.User)
+	FindById(ctx context.Context, tx *sql.Tx, userId string) (domain.User, error)
 	FindAll(ctx context.Context, tx *sql.Tx) []domain.User
 }
