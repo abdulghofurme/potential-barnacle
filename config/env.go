@@ -8,7 +8,8 @@ import (
 )
 
 type Env struct {
-	DB_MYSQL_DSN string
+	SERVER_ADDRESS string
+	DB_MYSQL_DSN   string
 }
 
 var MyEnv *Env
@@ -21,6 +22,7 @@ func init() {
 	}
 
 	MyEnv = &Env{
-		DB_MYSQL_DSN: os.Getenv("DB_MYSQL_DSN"),
+		SERVER_ADDRESS: os.Getenv("SERVER_ADDRESS"),
+		DB_MYSQL_DSN:   os.Getenv("DB_MYSQL_DSN"),
 	}
 }
