@@ -50,9 +50,6 @@ func (service *UserServiceImpl) Create(ctx context.Context, userRequest web.User
 	}
 
 	user = service.UserRepository.Create(ctx, tx, user)
-	if user.DeletedAt.Valid {
-		panic("User tidak lagi aktif")
-	}
 
 	return helper.ToUserResponse(user)
 }
