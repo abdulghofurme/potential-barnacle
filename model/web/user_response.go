@@ -2,16 +2,14 @@ package web
 
 import (
 	"time"
-
-	"abdulghofur.me/pshamo-go/model/domain"
 )
 
 type UserResponse struct {
-	Id          string
-	Username    string
-	PhoneNumber string
-	Role        domain.UserRoles
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   time.Time
+	Id          string    `json:"id"`
+	Username    string    `json:"username"`
+	PhoneNumber string    `json:"phone_number"`
+	Role        string    `json:"role"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	DeletedAt   string    `json:"deleted_at"`
 }

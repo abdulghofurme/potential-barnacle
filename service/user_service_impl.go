@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	"abdulghofur.me/pshamo-go/helper"
@@ -31,6 +32,10 @@ func (service *UserServiceImpl) Create(ctx context.Context, userRequest web.User
 	}
 	defer helper.CommitOrRollback(tx)
 
+	existingUsers := service.UserRepository.FindByUsernameAndPhoneNumber(ctx, tx, userRequest.Username, userRequest.PhoneNumber)
+	if len(existingUsers) > 0 {
+		panic("username atau phone number sudah digunakan")
+	}
 	passwordHash, err := helper.HashPassword(userRequest.Password)
 	if err != nil {
 		panic(err)
@@ -67,11 +72,21 @@ func (service *UserServiceImpl) Update(ctx context.Context, userRequest web.User
 		panic("user tidak lagi aktif")
 	}
 
-	user.Username = userRequest.Username
-	user.PhoneNumber = userRequest.PhoneNumber
-	user.Role = userRequest.Role
-	user = service.UserRepository.Update(ctx, tx, user)
+	if userRequest.Username != "" {
+		user.Username = userRequest.Username
+	}
+	if userRequest.PhoneNumber != "" {
+		user.PhoneNumber = userRequest.PhoneNumber
+	}
+	if userRequest.Role != "" {
+		user.Role = userRequest.Role
+	}
 
+	existingUsers := service.UserRepository.FindByUsernameAndPhoneNumber(ctx, tx, userRequest.Username, userRequest.PhoneNumber)
+	if (len(existingUsers) == 1 && existingUsers[0].Id != user.Id) || len(existingUsers) > 1 {
+		panic("username atau phone number sudah digunakan")
+	}
+	user = service.UserRepository.Update(ctx, tx, user)
 	return helper.ToUserResponse(user)
 
 }
@@ -92,9 +107,10 @@ func (service *UserServiceImpl) Delete(ctx context.Context, userId string) web.U
 	}
 
 	user.DeletedAt = sql.NullTime{
-		Time:  time.Time{},
+		Time:  time.Now(),
 		Valid: true,
 	}
+	fmt.Println(user.String())
 
 	service.UserRepository.Delete(ctx, tx, user)
 
