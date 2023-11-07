@@ -21,3 +21,18 @@ func ToUserResponse(user domain.User) web.UserResponse {
 		DeletedAt:   deletedAt,
 	}
 }
+
+func ToProductCategoryResponse(productCategory domain.ProductCategory) web.ProductCategoryResponse {
+	deletedAt := productCategory.DeletedAt.Time.String()
+	if !productCategory.DeletedAt.Valid {
+		deletedAt = ""
+	}
+
+	return web.ProductCategoryResponse{
+		Id:        productCategory.Id,
+		Name:      productCategory.Name,
+		CreatedAt: productCategory.CreatedAt,
+		UpdatedAt: productCategory.UpdatedAt,
+		DeletedAt: deletedAt,
+	}
+}
