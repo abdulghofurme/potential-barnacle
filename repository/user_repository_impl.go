@@ -15,7 +15,7 @@ func NewUserRepository() UserRepository {
 type UserRepositoryImpl struct{}
 
 func (repository *UserRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, user domain.User) domain.User {
-	SQL := "insert into users(id, username, phone_number, role, password_hash)"
+	SQL := "insert into users(id, username, phone_number, role, password_hash) values(?, ?, ?, ?, ?)"
 	_, err := tx.ExecContext(ctx, SQL, user.Id, user.Username, user.PhoneNumber, user.Role, user.PasswordHash)
 	if err != nil {
 		panic(err)
@@ -37,7 +37,7 @@ func (repository *UserRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, us
 
 func (repository *UserRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, user domain.User) {
 	SQL := "update users set deleted_at=? where id=?"
-	_, err := tx.ExecContext(ctx, SQL, user.DeletedAt, user.Id)
+	_, err := tx.ExecContext(ctx, SQL, user.DeletedAt.Time, user.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +74,7 @@ func (repository *UserRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, 
 }
 
 func (repository *UserRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domain.User {
-	SQL := "select id, username, phone_number, role, password_hash, created_at, updated_at, deleted_at from users where deleted_at=null"
+	SQL := "select id, username, phone_number, role, password_hash, created_at, updated_at, deleted_at from users WHERE deleted_at is NULL;"
 
 	rows, err := tx.QueryContext(ctx, SQL)
 	if err != nil {
@@ -83,7 +83,7 @@ func (repository *UserRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) [
 	defer rows.Close()
 
 	var users []domain.User
-	if rows.Next() {
+	for rows.Next() {
 		user := domain.User{}
 		err := rows.Scan(
 			&user.Id,
@@ -102,4 +102,31 @@ func (repository *UserRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) [
 	}
 
 	return users
+}
+
+func (repository *UserRepositoryImpl) FindByUsernameAndPhoneNumber(ctx context.Context, tx *sql.Tx, username string, phone_number string) []domain.User {
+	SQL := "select id, username, phone_number from users where username=? or phone_number=?"
+
+	rows, err := tx.QueryContext(ctx, SQL, username, phone_number)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	var users []domain.User
+	if rows.Next() {
+		user := domain.User{}
+		err := rows.Scan(
+			&user.Id,
+			&user.Username,
+			&user.PhoneNumber,
+		)
+		if err != nil {
+			panic(err)
+		}
+		users = append(users, user)
+	}
+
+	return users
+
 }
