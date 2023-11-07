@@ -15,9 +15,14 @@ import (
 
 func main() {
 	db := app.NewDB()
+
 	userRepository := repository.NewUserRepository()
 	userService := service.NewUserService(userRepository, db)
 	userController := controller.NewUserController(userService)
+
+	productCategoryRepository := repository.NewProductCategoryRepository()
+	productCategoryService := service.NewProductCategoryService(productCategoryRepository, db)
+	productCategoryController := controller.NewProductCategoryController(productCategoryService)
 
 	router := httprouter.New()
 
@@ -26,6 +31,12 @@ func main() {
 	router.GET("/api/users/:id", userController.FindById)
 	router.PUT("/api/users/:id", userController.Update)
 	router.DELETE("/api/users/:id", userController.Delete)
+
+	router.POST("/api/categories", productCategoryController.Create)
+	router.GET("/api/categories", productCategoryController.FindAll)
+	router.GET("/api/categories/:id", productCategoryController.FindById)
+	router.PUT("/api/categories/:id", productCategoryController.Update)
+	router.DELETE("/api/categories/:id", productCategoryController.Delete)
 
 	server := http.Server{
 		Addr:    config.MyEnv.SERVER_ADDRESS,
