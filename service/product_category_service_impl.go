@@ -69,6 +69,7 @@ func (service *ProductCategoryServiceImpl) Update(ctx context.Context, productCa
 		panic("name sudah digunakan")
 	}
 
+	productCategory.UpdatedAt = time.Now()
 	productCategory = service.ProductCategoryRepository.Update(ctx, tx, productCategory)
 	return helper.ToProductCategoryResponse(productCategory)
 }
