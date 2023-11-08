@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"abdulghofur.me/pshamo-go/helper"
@@ -22,9 +21,7 @@ type ProductCategoryControllerImpl struct {
 
 func (controller *ProductCategoryControllerImpl) Create(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	productCategoryCreateRequest := web.ProductCategoryCreateRequest{}
-	decoder := json.NewDecoder(request.Body)
-	err := decoder.Decode(&productCategoryCreateRequest)
-	helper.PanicIfErrof(err)
+	helper.ReadFromRequestBody(request, &productCategoryCreateRequest)
 
 	productCategoryResponse := controller.ProductCategoryService.Create(
 		request.Context(),
@@ -36,17 +33,12 @@ func (controller *ProductCategoryControllerImpl) Create(writer http.ResponseWrit
 		Data:   productCategoryResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err = encoder.Encode(webResponse)
-	helper.PanicIfErrof(err)
+	helper.WriteToResponseBody(writer, &webResponse)
 }
 
 func (controller *ProductCategoryControllerImpl) Update(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	productCategoryUpdateRequest := web.ProductCategoryUpdateRequest{}
-	decoder := json.NewDecoder(request.Body)
-	err := decoder.Decode(&productCategoryUpdateRequest)
-	helper.PanicIfErrof(err)
+	helper.ReadFromRequestBody(request, &productCategoryUpdateRequest)
 
 	productCategoryId := params.ByName("id")
 	productCategoryUpdateRequest.Id = productCategoryId
@@ -61,10 +53,7 @@ func (controller *ProductCategoryControllerImpl) Update(writer http.ResponseWrit
 		Data:   productCategoryResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err = encoder.Encode(webResponse)
-	helper.PanicIfErrof(err)
+	helper.WriteToResponseBody(writer, &webResponse)
 }
 
 func (controller *ProductCategoryControllerImpl) Delete(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -80,11 +69,7 @@ func (controller *ProductCategoryControllerImpl) Delete(writer http.ResponseWrit
 		Data:   productCategoryResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err := encoder.Encode(webResponse)
-	helper.PanicIfErrof(err)
-
+	helper.WriteToResponseBody(writer, &webResponse)
 }
 
 func (controller *ProductCategoryControllerImpl) FindById(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -100,10 +85,7 @@ func (controller *ProductCategoryControllerImpl) FindById(writer http.ResponseWr
 		Data:   productCategoryResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err := encoder.Encode(webResponse)
-	helper.PanicIfErrof(err)
+	helper.WriteToResponseBody(writer, &webResponse)
 }
 
 func (controller *ProductCategoryControllerImpl) FindAll(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -114,8 +96,5 @@ func (controller *ProductCategoryControllerImpl) FindAll(writer http.ResponseWri
 		Data:   productCategoriesResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err := encoder.Encode(webResponse)
-	helper.PanicIfErrof(err)
+	helper.WriteToResponseBody(writer, &webResponse)
 }
