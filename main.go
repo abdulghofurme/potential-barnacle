@@ -20,7 +20,7 @@ func main() {
 	validate := validator.New()
 
 	userRepository := repository.NewUserRepository()
-	userService := service.NewUserService(userRepository, db)
+	userService := service.NewUserService(userRepository, db, validate)
 	userController := controller.NewUserController(userService)
 
 	productCategoryRepository := repository.NewProductCategoryRepository()

@@ -1,8 +1,8 @@
 package web
 
 type UserUpdateRequest struct {
-	Id          string
-	Username    string
-	PhoneNumber string
-	Role        string
+	Id          string `validate:"required"`
+	Username    string `validate:"required"`
+	PhoneNumber string `validate:"required"`
+	Role        string `validate:"required"`
 }

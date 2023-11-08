@@ -9,22 +9,28 @@ import (
 	"abdulghofur.me/pshamo-go/model/domain"
 	"abdulghofur.me/pshamo-go/model/web"
 	"abdulghofur.me/pshamo-go/repository"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
-func NewUserService(userRepository repository.UserRepository, DB *sql.DB) UserService {
+func NewUserService(userRepository repository.UserRepository, DB *sql.DB, validate *validator.Validate) UserService {
 	return &UserServiceImpl{
 		UserRepository: userRepository,
 		DB:             DB,
+		Validate:       validate,
 	}
 }
 
 type UserServiceImpl struct {
 	UserRepository repository.UserRepository
 	DB             *sql.DB
+	Validate       *validator.Validate
 }
 
 func (service *UserServiceImpl) Create(ctx context.Context, userRequest web.UserCreateRequest) web.UserResponse {
+	err := service.Validate.Struct(userRequest)
+	helper.PanicIfErrof(err)
+
 	tx, err := service.DB.Begin()
 	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
@@ -50,6 +56,9 @@ func (service *UserServiceImpl) Create(ctx context.Context, userRequest web.User
 }
 
 func (service *UserServiceImpl) Update(ctx context.Context, userRequest web.UserUpdateRequest) web.UserResponse {
+	err := service.Validate.Struct(userRequest)
+	helper.PanicIfErrof(err)
+
 	tx, err := service.DB.Begin()
 	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
@@ -58,16 +67,6 @@ func (service *UserServiceImpl) Update(ctx context.Context, userRequest web.User
 	helper.PanicIfErrof(err)
 	if user.DeletedAt.Valid {
 		panic("user tidak lagi aktif")
-	}
-
-	if userRequest.Username != "" {
-		user.Username = userRequest.Username
-	}
-	if userRequest.PhoneNumber != "" {
-		user.PhoneNumber = userRequest.PhoneNumber
-	}
-	if userRequest.Role != "" {
-		user.Role = userRequest.Role
 	}
 
 	existingUsers := service.UserRepository.FindByUsernameAndPhoneNumber(ctx, tx, userRequest.Username, userRequest.PhoneNumber)
