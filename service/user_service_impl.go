@@ -73,6 +73,8 @@ func (service *UserServiceImpl) Update(ctx context.Context, userRequest web.User
 	if (len(existingUsers) == 1 && existingUsers[0].Id != user.Id) || len(existingUsers) > 1 {
 		panic("username atau phone number sudah digunakan")
 	}
+
+	user.UpdatedAt = time.Now()
 	user = service.UserRepository.Update(ctx, tx, user)
 	return helper.ToUserResponse(user)
 
