@@ -116,8 +116,8 @@ func (service *ProductCategoryServiceImpl) FindAll(ctx context.Context) []web.Pr
 	productCategories := service.ProductCategoryRepository.FindAll(ctx, tx)
 
 	var productCategoriesResponse []web.ProductCategoryResponse
-	for _, pproductCategory := range productCategories {
-		productCategoriesResponse = append(productCategoriesResponse, helper.ToProductCategoryResponse(pproductCategory))
+	for _, productCategory := range productCategories {
+		productCategoriesResponse = append(productCategoriesResponse, helper.ToProductCategoryResponse(productCategory))
 	}
 
 	return productCategoriesResponse
