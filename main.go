@@ -24,7 +24,7 @@ func main() {
 	userController := controller.NewUserController(userService)
 
 	productCategoryRepository := repository.NewProductCategoryRepository()
-	productCategoryService := service.NewProductCategoryService(productCategoryRepository, db)
+	productCategoryService := service.NewProductCategoryService(productCategoryRepository, db, validate)
 	productCategoryController := controller.NewProductCategoryController(productCategoryService)
 
 	productRepository := repository.NewProductRepository()
