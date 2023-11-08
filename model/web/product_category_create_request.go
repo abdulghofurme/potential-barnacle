@@ -1,6 +1,5 @@
 package web
 
 type ProductCategoryCreateRequest struct {
-	Id   string
-	Name string
+	Name string `validate:"required"`
 }

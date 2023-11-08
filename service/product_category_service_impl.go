@@ -9,22 +9,28 @@ import (
 	"abdulghofur.me/pshamo-go/model/domain"
 	"abdulghofur.me/pshamo-go/model/web"
 	"abdulghofur.me/pshamo-go/repository"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
-func NewProductCategoryService(productCategoryRepository repository.ProductCategoryRepository, DB *sql.DB) ProductCategoryService {
+func NewProductCategoryService(productCategoryRepository repository.ProductCategoryRepository, DB *sql.DB, validate *validator.Validate) ProductCategoryService {
 	return &ProductCategoryServiceImpl{
 		ProductCategoryRepository: productCategoryRepository,
 		DB:                        DB,
+		Validate:                  validate,
 	}
 }
 
 type ProductCategoryServiceImpl struct {
 	ProductCategoryRepository repository.ProductCategoryRepository
 	DB                        *sql.DB
+	Validate                  *validator.Validate
 }
 
 func (service *ProductCategoryServiceImpl) Create(ctx context.Context, productCategoryRequest web.ProductCategoryCreateRequest) web.ProductCategoryResponse {
+	err := service.Validate.Struct(productCategoryRequest)
+	helper.PanicIfErrof(err)
+
 	tx, err := service.DB.Begin()
 	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
@@ -45,6 +51,9 @@ func (service *ProductCategoryServiceImpl) Create(ctx context.Context, productCa
 }
 
 func (service *ProductCategoryServiceImpl) Update(ctx context.Context, productCategoryRequest web.ProductCategoryUpdateRequest) web.ProductCategoryResponse {
+	err := service.Validate.Struct(productCategoryRequest)
+	helper.PanicIfErrof(err)
+
 	tx, err := service.DB.Begin()
 	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
@@ -53,10 +62,6 @@ func (service *ProductCategoryServiceImpl) Update(ctx context.Context, productCa
 	helper.PanicIfErrof(err)
 	if productCategory.DeletedAt.Valid {
 		panic("product category tidak lagi aktif")
-	}
-
-	if productCategoryRequest.Name != "" {
-		productCategory.Name = productCategoryRequest.Name
 	}
 
 	existingProductCategories := service.ProductCategoryRepository.FindByName(ctx, tx, productCategoryRequest.Name)
