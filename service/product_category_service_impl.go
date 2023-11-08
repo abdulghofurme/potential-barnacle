@@ -26,9 +26,7 @@ type ProductCategoryServiceImpl struct {
 
 func (service *ProductCategoryServiceImpl) Create(ctx context.Context, productCategoryRequest web.ProductCategoryCreateRequest) web.ProductCategoryResponse {
 	tx, err := service.DB.Begin()
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
 
 	existingProductCategories := service.ProductCategoryRepository.FindByName(ctx, tx, productCategoryRequest.Name)
@@ -48,15 +46,11 @@ func (service *ProductCategoryServiceImpl) Create(ctx context.Context, productCa
 
 func (service *ProductCategoryServiceImpl) Update(ctx context.Context, productCategoryRequest web.ProductCategoryUpdateRequest) web.ProductCategoryResponse {
 	tx, err := service.DB.Begin()
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
 
 	productCategory, err := service.ProductCategoryRepository.FindById(ctx, tx, productCategoryRequest.Id)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 	if productCategory.DeletedAt.Valid {
 		panic("product category tidak lagi aktif")
 	}
@@ -76,15 +70,11 @@ func (service *ProductCategoryServiceImpl) Update(ctx context.Context, productCa
 
 func (service *ProductCategoryServiceImpl) Delete(ctx context.Context, productCategoryId string) web.ProductCategoryResponse {
 	tx, err := service.DB.Begin()
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
 
 	productCategory, err := service.ProductCategoryRepository.FindById(ctx, tx, productCategoryId)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 
 	if productCategory.DeletedAt.Valid {
 		panic("product category tidak lagi aktif")
@@ -101,15 +91,11 @@ func (service *ProductCategoryServiceImpl) Delete(ctx context.Context, productCa
 
 func (service *ProductCategoryServiceImpl) FindById(ctx context.Context, productCategoryId string) web.ProductCategoryResponse {
 	tx, err := service.DB.Begin()
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
 
 	productCategory, err := service.ProductCategoryRepository.FindById(ctx, tx, productCategoryId)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 	if productCategory.DeletedAt.Valid {
 		panic("product category tidak lagi aktif")
 	}
@@ -119,9 +105,7 @@ func (service *ProductCategoryServiceImpl) FindById(ctx context.Context, product
 
 func (service *ProductCategoryServiceImpl) FindAll(ctx context.Context) []web.ProductCategoryResponse {
 	tx, err := service.DB.Begin()
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
 
 	productCategories := service.ProductCategoryRepository.FindAll(ctx, tx)

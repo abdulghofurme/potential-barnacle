@@ -5,13 +5,12 @@ import (
 	"time"
 
 	"abdulghofur.me/pshamo-go/config"
+	"abdulghofur.me/pshamo-go/helper"
 )
 
 func NewDB() *sql.DB {
 	db, err := sql.Open("mysql", config.MyEnv.DB_MYSQL_DSN)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 
 	db.SetMaxIdleConns(3)
 	db.SetMaxOpenConns(10)

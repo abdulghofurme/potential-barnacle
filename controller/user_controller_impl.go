@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"abdulghofur.me/pshamo-go/helper"
 	"abdulghofur.me/pshamo-go/model/web"
 	"abdulghofur.me/pshamo-go/service"
 	"github.com/julienschmidt/httprouter"
@@ -21,12 +21,7 @@ type UserControllerImpl struct {
 
 func (controller *UserControllerImpl) Create(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	userCreateRequest := web.UserCreateRequest{}
-
-	decoder := json.NewDecoder(request.Body)
-	err := decoder.Decode(&userCreateRequest)
-	if err != nil {
-		panic(err)
-	}
+	helper.ReadFromRequestBody(request, &userCreateRequest)
 
 	userResponse := controller.UserService.Create(request.Context(), userCreateRequest)
 	webResponse := web.WebResponse{
@@ -35,22 +30,12 @@ func (controller *UserControllerImpl) Create(writer http.ResponseWriter, request
 		Data:   userResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err = encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
+	helper.WriteToResponseBody(writer, &webResponse)
 }
 
 func (controller *UserControllerImpl) Update(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	userUpdateRequest := web.UserUpdateRequest{}
-
-	decoder := json.NewDecoder(request.Body)
-	err := decoder.Decode(&userUpdateRequest)
-	if err != nil {
-		panic(err)
-	}
+	helper.ReadFromRequestBody(request, &userUpdateRequest)
 
 	userId := params.ByName("id")
 	userUpdateRequest.Id = userId
@@ -62,12 +47,7 @@ func (controller *UserControllerImpl) Update(writer http.ResponseWriter, request
 		Data:   userResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err = encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
+	helper.WriteToResponseBody(writer, &webResponse)
 }
 
 func (controller *UserControllerImpl) Delete(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -79,12 +59,7 @@ func (controller *UserControllerImpl) Delete(writer http.ResponseWriter, request
 		Status: "OK",
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err := encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
+	helper.WriteToResponseBody(writer, &webResponse)
 }
 
 func (controller *UserControllerImpl) FindById(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -97,13 +72,7 @@ func (controller *UserControllerImpl) FindById(writer http.ResponseWriter, reque
 		Data:   userResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err := encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
-
+	helper.WriteToResponseBody(writer, &webResponse)
 }
 
 func (controller *UserControllerImpl) FindAll(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -114,10 +83,5 @@ func (controller *UserControllerImpl) FindAll(writer http.ResponseWriter, reques
 		Data:   usersResponse,
 	}
 
-	writer.Header().Add("content-type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err := encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
+	helper.WriteToResponseBody(writer, &webResponse)
 }
