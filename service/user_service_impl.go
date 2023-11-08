@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"abdulghofur.me/pshamo-go/helper"
@@ -95,7 +94,6 @@ func (service *UserServiceImpl) Delete(ctx context.Context, userId string) web.U
 		Time:  time.Now(),
 		Valid: true,
 	}
-	fmt.Println(user.String())
 
 	service.UserRepository.Delete(ctx, tx, user)
 
