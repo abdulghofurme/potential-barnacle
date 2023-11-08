@@ -31,8 +31,31 @@ func ToProductCategoryResponse(productCategory domain.ProductCategory) web.Produ
 	return web.ProductCategoryResponse{
 		Id:        productCategory.Id,
 		Name:      productCategory.Name,
-		CreatedAt: productCategory.CreatedAt,
-		UpdatedAt: productCategory.UpdatedAt,
+		CreatedAt: productCategory.CreatedAt.String(),
+		UpdatedAt: productCategory.UpdatedAt.String(),
 		DeletedAt: deletedAt,
 	}
+}
+
+func ToProductResponse(product domain.Product) web.ProductResponse {
+	deletedAt := product.DeletedAt.Time.String()
+	if !product.DeletedAt.Valid {
+		deletedAt = ""
+	}
+
+	return web.ProductResponse{
+		Id:          product.Id,
+		Name:        product.Name,
+		Price:       product.Price,
+		Description: product.Description.String,
+		Tags:        product.Tags.String,
+		Category: web.ProductCategoryResponse{
+			Id:   product.Category.Id,
+			Name: product.Category.Name,
+		},
+		CreatedAt: product.CreatedAt.String(),
+		UpdatedAt: product.UpdatedAt.String(),
+		DeletedAt: deletedAt,
+	}
+
 }
