@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"abdulghofur.me/pshamo-go/helper"
 	"abdulghofur.me/pshamo-go/model/web"
 	"abdulghofur.me/pshamo-go/service"
 	"github.com/julienschmidt/httprouter"
@@ -24,9 +25,7 @@ func (controller *UserControllerImpl) Create(writer http.ResponseWriter, request
 
 	decoder := json.NewDecoder(request.Body)
 	err := decoder.Decode(&userCreateRequest)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 
 	userResponse := controller.UserService.Create(request.Context(), userCreateRequest)
 	webResponse := web.WebResponse{
@@ -38,9 +37,7 @@ func (controller *UserControllerImpl) Create(writer http.ResponseWriter, request
 	writer.Header().Add("content-type", "application/json")
 	encoder := json.NewEncoder(writer)
 	err = encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 }
 
 func (controller *UserControllerImpl) Update(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -48,9 +45,7 @@ func (controller *UserControllerImpl) Update(writer http.ResponseWriter, request
 
 	decoder := json.NewDecoder(request.Body)
 	err := decoder.Decode(&userUpdateRequest)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 
 	userId := params.ByName("id")
 	userUpdateRequest.Id = userId
@@ -65,9 +60,7 @@ func (controller *UserControllerImpl) Update(writer http.ResponseWriter, request
 	writer.Header().Add("content-type", "application/json")
 	encoder := json.NewEncoder(writer)
 	err = encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 }
 
 func (controller *UserControllerImpl) Delete(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -82,9 +75,7 @@ func (controller *UserControllerImpl) Delete(writer http.ResponseWriter, request
 	writer.Header().Add("content-type", "application/json")
 	encoder := json.NewEncoder(writer)
 	err := encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 }
 
 func (controller *UserControllerImpl) FindById(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -100,10 +91,7 @@ func (controller *UserControllerImpl) FindById(writer http.ResponseWriter, reque
 	writer.Header().Add("content-type", "application/json")
 	encoder := json.NewEncoder(writer)
 	err := encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
-
+	helper.PanicIfErrof(err)
 }
 
 func (controller *UserControllerImpl) FindAll(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -117,7 +105,5 @@ func (controller *UserControllerImpl) FindAll(writer http.ResponseWriter, reques
 	writer.Header().Add("content-type", "application/json")
 	encoder := json.NewEncoder(writer)
 	err := encoder.Encode(webResponse)
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 }

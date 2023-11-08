@@ -9,6 +9,7 @@ import (
 	"abdulghofur.me/pshamo-go/app"
 	"abdulghofur.me/pshamo-go/config"
 	"abdulghofur.me/pshamo-go/controller"
+	"abdulghofur.me/pshamo-go/helper"
 	"abdulghofur.me/pshamo-go/repository"
 	"abdulghofur.me/pshamo-go/service"
 )
@@ -44,7 +45,5 @@ func main() {
 	}
 
 	err := server.ListenAndServe()
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"abdulghofur.me/pshamo-go/helper"
 	"github.com/joho/godotenv"
 )
 
@@ -17,9 +18,7 @@ var MyEnv *Env
 func init() {
 	fmt.Println("config init")
 	err := godotenv.Load(".env")
-	if err != nil {
-		panic(err)
-	}
+	helper.PanicIfErrof(err)
 
 	MyEnv = &Env{
 		SERVER_ADDRESS: os.Getenv("SERVER_ADDRESS"),
