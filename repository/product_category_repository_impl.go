@@ -16,7 +16,7 @@ func NewProductCategoryRepository() ProductCategoryRepository {
 type ProductCategoryRepositoryImpl struct{}
 
 func (repository *ProductCategoryRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, productCategory domain.ProductCategory) domain.ProductCategory {
-	SQL := `insert into product_categories(id, name) values(id, name)`
+	SQL := `insert into product_categories(id, name) values(?, ?)`
 	_, err := tx.ExecContext(ctx, SQL, productCategory.Id, productCategory.Name)
 	helper.PanicIfErrof(err)
 
