@@ -18,6 +18,7 @@ import (
 func main() {
 	db := app.NewDB()
 	validate := validator.New()
+	storage := app.NewStorage()
 
 	userRepository := repository.NewUserRepository()
 	userService := service.NewUserService(userRepository, db, validate)
@@ -32,7 +33,7 @@ func main() {
 	productController := controller.NewProductController(productService)
 
 	productGalleryRepository := repository.NewProductGalleryRepository()
-	productGalleryService := service.NewProductGalleryService(productGalleryRepository, db, validate)
+	productGalleryService := service.NewProductGalleryService(productGalleryRepository, db, validate, storage)
 	productGalleryController := controller.NewProductGalleryController(productGalleryService)
 
 	router := httprouter.New()

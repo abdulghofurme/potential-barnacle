@@ -9,8 +9,10 @@ import (
 )
 
 type Env struct {
-	SERVER_ADDRESS string
-	DB_MYSQL_DSN   string
+	SERVER_ADDRESS      string
+	DB_MYSQL_DSN        string
+	STORAGE_BUCKET      string
+	STORAGE_FOLDER_NAME string
 }
 
 var MyEnv *Env
@@ -21,7 +23,9 @@ func init() {
 	helper.PanicIfErrof(err)
 
 	MyEnv = &Env{
-		SERVER_ADDRESS: os.Getenv("SERVER_ADDRESS"),
-		DB_MYSQL_DSN:   os.Getenv("DB_MYSQL_DSN"),
+		SERVER_ADDRESS:      os.Getenv("SERVER_ADDRESS"),
+		DB_MYSQL_DSN:        os.Getenv("DB_MYSQL_DSN"),
+		STORAGE_BUCKET:      os.Getenv("STORAGE_BUCKET"),
+		STORAGE_FOLDER_NAME: os.Getenv("STORAGE_FOLDER_NAME"),
 	}
 }

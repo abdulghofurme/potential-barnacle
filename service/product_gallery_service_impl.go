@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"abdulghofur.me/pshamo-go/app"
 	"abdulghofur.me/pshamo-go/config"
 	"abdulghofur.me/pshamo-go/helper"
 	"abdulghofur.me/pshamo-go/model/domain"
@@ -16,11 +17,12 @@ import (
 	"github.com/google/uuid"
 )
 
-func NewProductGalleryService(productGalleryRepository repository.ProductGalleryRepository, DB *sql.DB, validate *validator.Validate) ProductGalleryService {
+func NewProductGalleryService(productGalleryRepository repository.ProductGalleryRepository, DB *sql.DB, validate *validator.Validate, storage *app.Storage) ProductGalleryService {
 	return &ProductGalleryServiceImpl{
 		ProductGalleryRepository: productGalleryRepository,
 		DB:                       DB,
 		Validate:                 validate,
+		Storage:                  storage,
 	}
 }
 
@@ -28,6 +30,7 @@ type ProductGalleryServiceImpl struct {
 	ProductGalleryRepository repository.ProductGalleryRepository
 	DB                       *sql.DB
 	Validate                 *validator.Validate
+	Storage                  *app.Storage
 }
 
 func (service *ProductGalleryServiceImpl) Create(ctx context.Context, productGalleryRequest web.ProductGalleryCreateRequest) web.ProductGalleryResponse {
@@ -39,14 +42,16 @@ func (service *ProductGalleryServiceImpl) Create(ctx context.Context, productGal
 	if !strings.Contains(config.ProductGalleryAllowedFormat, fileExtension) {
 		panic("file format tidak diizinkan")
 	}
+	id := uuid.NewString()
+	url := service.Storage.Upload(productGalleryRequest.File, fileName, id)
 
 	tx, err := service.DB.Begin()
 	helper.PanicIfErrof(err)
 	defer helper.CommitOrRollback(tx)
 
 	productGallery := domain.ProductGallery{
-		Id:        uuid.NewString(),
-		Url:       "",
+		Id:        id,
+		Url:       url,
 		ProductId: productGalleryRequest.ProductId,
 	}
 
@@ -63,6 +68,7 @@ func (service *ProductGalleryServiceImpl) Update(ctx context.Context, productGal
 	if !strings.Contains(config.ProductGalleryAllowedFormat, fileExtension) {
 		panic("file format tidak diizinkan")
 	}
+	url := service.Storage.Upload(productGalleryRequest.File, fileName, productGalleryRequest.Id)
 
 	tx, err := service.DB.Begin()
 	helper.PanicIfErrof(err)
@@ -74,7 +80,7 @@ func (service *ProductGalleryServiceImpl) Update(ctx context.Context, productGal
 		panic("product gallery tidak lagi aktif")
 	}
 
-	productGallery.Url = ""
+	productGallery.Url = url
 	productGallery.ProductId = productGalleryRequest.ProductId
 	productGallery.UpdatedAt = time.Now()
 
