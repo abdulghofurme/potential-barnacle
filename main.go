@@ -31,6 +31,10 @@ func main() {
 	productService := service.NewProductService(productRepository, db, validate)
 	productController := controller.NewProductController(productService)
 
+	productGalleryRepository := repository.NewProductGalleryRepository()
+	productGalleryService := service.NewProductGalleryService(productGalleryRepository, db, validate)
+	productGalleryController := controller.NewProductGalleryController(productGalleryService)
+
 	router := httprouter.New()
 
 	router.POST("/api/users", userController.Create)
@@ -50,6 +54,12 @@ func main() {
 	router.GET("/api/products/:id", productController.FindById)
 	router.PUT("/api/products/:id", productController.Update)
 	router.DELETE("/api/products/:id", productController.Delete)
+
+	router.POST("/api/galleries", productGalleryController.Create)
+	router.GET("/api/galleries", productGalleryController.FindAll)
+	router.GET("/api/galleries/:id", productGalleryController.FindById)
+	router.PUT("/api/galleries/:id", productGalleryController.Update)
+	router.DELETE("/api/galleries/:id", productGalleryController.Delete)
 
 	server := http.Server{
 		Addr:    config.MyEnv.SERVER_ADDRESS,

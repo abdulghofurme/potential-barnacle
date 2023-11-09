@@ -57,5 +57,20 @@ func ToProductResponse(product domain.Product) web.ProductResponse {
 		UpdatedAt: product.UpdatedAt.String(),
 		DeletedAt: deletedAt,
 	}
+}
 
+func ToProductGalleryResponse(productGallery domain.ProductGallery) web.ProductGalleryResponse {
+	deletedAt := productGallery.DeletedAt.Time.String()
+	if !productGallery.DeletedAt.Valid {
+		deletedAt = ""
+	}
+
+	return web.ProductGalleryResponse{
+		Id:        productGallery.Id,
+		Url:       productGallery.Url,
+		ProductId: productGallery.ProductId,
+		CreatedAt: productGallery.CreatedAt.String(),
+		UpdatedAt: productGallery.UpdatedAt.String(),
+		DeletedAt: deletedAt,
+	}
 }
