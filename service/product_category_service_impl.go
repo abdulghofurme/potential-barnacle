@@ -29,10 +29,10 @@ type ProductCategoryServiceImpl struct {
 
 func (service *ProductCategoryServiceImpl) Create(ctx context.Context, productCategoryRequest web.ProductCategoryCreateRequest) web.ProductCategoryResponse {
 	err := service.Validate.Struct(productCategoryRequest)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	existingProductCategories := service.ProductCategoryRepository.FindByName(ctx, tx, productCategoryRequest.Name)
@@ -52,14 +52,14 @@ func (service *ProductCategoryServiceImpl) Create(ctx context.Context, productCa
 
 func (service *ProductCategoryServiceImpl) Update(ctx context.Context, productCategoryRequest web.ProductCategoryUpdateRequest) web.ProductCategoryResponse {
 	err := service.Validate.Struct(productCategoryRequest)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productCategory, err := service.ProductCategoryRepository.FindById(ctx, tx, productCategoryRequest.Id)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if productCategory.DeletedAt.Valid {
 		panic("product category tidak lagi aktif")
 	}
@@ -75,11 +75,11 @@ func (service *ProductCategoryServiceImpl) Update(ctx context.Context, productCa
 
 func (service *ProductCategoryServiceImpl) Delete(ctx context.Context, productCategoryId string) web.ProductCategoryResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productCategory, err := service.ProductCategoryRepository.FindById(ctx, tx, productCategoryId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	if productCategory.DeletedAt.Valid {
 		panic("product category tidak lagi aktif")
@@ -96,11 +96,11 @@ func (service *ProductCategoryServiceImpl) Delete(ctx context.Context, productCa
 
 func (service *ProductCategoryServiceImpl) FindById(ctx context.Context, productCategoryId string) web.ProductCategoryResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productCategory, err := service.ProductCategoryRepository.FindById(ctx, tx, productCategoryId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if productCategory.DeletedAt.Valid {
 		panic("product category tidak lagi aktif")
 	}
@@ -110,7 +110,7 @@ func (service *ProductCategoryServiceImpl) FindById(ctx context.Context, product
 
 func (service *ProductCategoryServiceImpl) FindAll(ctx context.Context) []web.ProductCategoryResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productCategories := service.ProductCategoryRepository.FindAll(ctx, tx)

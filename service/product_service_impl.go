@@ -29,10 +29,10 @@ type ProductServiceImpl struct {
 
 func (service *ProductServiceImpl) Create(ctx context.Context, productRequest web.ProductCreateRequest) web.ProductResponse {
 	err := service.Validate.Struct(productRequest)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	product := domain.Product{
@@ -61,14 +61,14 @@ func (service *ProductServiceImpl) Create(ctx context.Context, productRequest we
 
 func (service *ProductServiceImpl) Update(ctx context.Context, productRequest web.ProductUpdateRequest) web.ProductResponse {
 	err := service.Validate.Struct(productRequest)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	product, err := service.ProductRepository.FindById(ctx, tx, productRequest.Id)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if product.DeletedAt.Valid {
 		panic("product tidak lagi aktif")
 	}
@@ -92,11 +92,11 @@ func (service *ProductServiceImpl) Update(ctx context.Context, productRequest we
 
 func (service *ProductServiceImpl) Delete(ctx context.Context, productId string) web.ProductResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	product, err := service.ProductRepository.FindById(ctx, tx, productId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	if product.DeletedAt.Valid {
 		panic("product tidak lagi aktif")
@@ -113,11 +113,11 @@ func (service *ProductServiceImpl) Delete(ctx context.Context, productId string)
 }
 func (service *ProductServiceImpl) FindById(ctx context.Context, productId string) web.ProductResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	product, err := service.ProductRepository.FindById(ctx, tx, productId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if product.DeletedAt.Valid {
 		panic("product tidak lagi aktif")
 	}
@@ -127,7 +127,7 @@ func (service *ProductServiceImpl) FindById(ctx context.Context, productId strin
 
 func (service *ProductServiceImpl) FindAll(ctx context.Context) []web.ProductResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	products := service.ProductRepository.FindAll(ctx, tx)

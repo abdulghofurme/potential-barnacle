@@ -18,7 +18,7 @@ var MyEnv *Env
 func init() {
 	fmt.Println("config init")
 	err := godotenv.Load(".env")
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	MyEnv = &Env{
 		SERVER_ADDRESS: os.Getenv("SERVER_ADDRESS"),

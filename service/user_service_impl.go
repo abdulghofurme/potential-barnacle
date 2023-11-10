@@ -29,10 +29,10 @@ type UserServiceImpl struct {
 
 func (service *UserServiceImpl) Create(ctx context.Context, userRequest web.UserCreateRequest) web.UserResponse {
 	err := service.Validate.Struct(userRequest)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	existingUsers := service.UserRepository.FindByUsernameAndPhoneNumber(ctx, tx, userRequest.Username, userRequest.PhoneNumber)
@@ -40,7 +40,7 @@ func (service *UserServiceImpl) Create(ctx context.Context, userRequest web.User
 		panic("username atau phone number sudah digunakan")
 	}
 	passwordHash, err := helper.HashPassword(userRequest.Password)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	user := domain.User{
 		Id:           uuid.NewString(),
@@ -57,14 +57,14 @@ func (service *UserServiceImpl) Create(ctx context.Context, userRequest web.User
 
 func (service *UserServiceImpl) Update(ctx context.Context, userRequest web.UserUpdateRequest) web.UserResponse {
 	err := service.Validate.Struct(userRequest)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	user, err := service.UserRepository.FindById(ctx, tx, userRequest.Id)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if user.DeletedAt.Valid {
 		panic("user tidak lagi aktif")
 	}
@@ -80,11 +80,11 @@ func (service *UserServiceImpl) Update(ctx context.Context, userRequest web.User
 
 func (service *UserServiceImpl) Delete(ctx context.Context, userId string) web.UserResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	user, err := service.UserRepository.FindById(ctx, tx, userId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if user.DeletedAt.Valid {
 		panic("user tidak lagi aktif")
 	}
@@ -101,11 +101,11 @@ func (service *UserServiceImpl) Delete(ctx context.Context, userId string) web.U
 
 func (service *UserServiceImpl) FindById(ctx context.Context, userId string) web.UserResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	user, err := service.UserRepository.FindById(ctx, tx, userId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if user.DeletedAt.Valid {
 		panic("user tidak lagi aktif")
 	}
@@ -115,7 +115,7 @@ func (service *UserServiceImpl) FindById(ctx context.Context, userId string) web
 
 func (service *UserServiceImpl) FindAll(ctx context.Context) []web.UserResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	users := service.UserRepository.FindAll(ctx, tx)
