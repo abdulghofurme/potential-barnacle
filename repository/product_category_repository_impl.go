@@ -26,8 +26,8 @@ func (repository *ProductCategoryRepositoryImpl) Create(ctx context.Context, tx 
 }
 
 func (repository *ProductCategoryRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, productCategory domain.ProductCategory) domain.ProductCategory {
-	SQL := `update product_categories set name=? where id=?`
-	_, err := tx.ExecContext(ctx, SQL, productCategory.Name, productCategory.Id)
+	SQL := `update product_categories set name=?, updated_at=? where id=?`
+	_, err := tx.ExecContext(ctx, SQL, productCategory.Name, productCategory.UpdatedAt, productCategory.Id)
 	helper.PanicIfError(err)
 
 	return productCategory

@@ -26,8 +26,8 @@ func (repository *UserRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, us
 }
 
 func (repository *UserRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, user domain.User) domain.User {
-	SQL := "update users set username=?, phone_number=?, role=?, password_hash=? where id=?"
-	_, err := tx.ExecContext(ctx, SQL, user.Username, user.PhoneNumber, user.Role, user.PasswordHash, user.Id)
+	SQL := "update users set username=?, phone_number=?, role=?, password_hash=?, updated_at=? where id=?"
+	_, err := tx.ExecContext(ctx, SQL, user.Username, user.PhoneNumber, user.Role, user.PasswordHash, user.UpdatedAt, user.Id)
 	helper.PanicIfError(err)
 	return user
 }
