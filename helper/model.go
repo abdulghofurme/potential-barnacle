@@ -74,3 +74,20 @@ func ToProductGalleryResponse(productGallery domain.ProductGallery) web.ProductG
 		DeletedAt: deletedAt,
 	}
 }
+
+func ToTransactionResponse(transaction domain.Transaction) web.TransactionResponse {
+	deletedAt := transaction.DeletedAt.Time.String()
+	if !transaction.DeletedAt.Valid {
+		deletedAt = ""
+	}
+
+	return web.TransactionResponse{
+		Id:            transaction.Id,
+		Address:       transaction.Address,
+		PaymentMethod: transaction.PaymentMethod,
+		Status:        transaction.Status,
+		CreatedAt:     transaction.CreatedAt.String(),
+		UpdatedAt:     transaction.CreatedAt.String(),
+		DeletedAt:     deletedAt,
+	}
+}
