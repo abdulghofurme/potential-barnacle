@@ -35,7 +35,7 @@ type ProductGalleryServiceImpl struct {
 
 func (service *ProductGalleryServiceImpl) Create(ctx context.Context, productGalleryRequest web.ProductGalleryCreateRequest) web.ProductGalleryResponse {
 	err := service.Validate.Struct(productGalleryRequest)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	fileName := productGalleryRequest.FileHeader.Filename
 	fileExtension := filepath.Ext(fileName)
@@ -46,7 +46,7 @@ func (service *ProductGalleryServiceImpl) Create(ctx context.Context, productGal
 	url := service.Storage.Upload(productGalleryRequest.File, fileName, id)
 
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productGallery := domain.ProductGallery{
@@ -61,7 +61,7 @@ func (service *ProductGalleryServiceImpl) Create(ctx context.Context, productGal
 
 func (service *ProductGalleryServiceImpl) Update(ctx context.Context, productGalleryRequest web.ProductGalleryUpdateRequest) web.ProductGalleryResponse {
 	err := service.Validate.Struct(productGalleryRequest)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	fileName := productGalleryRequest.FileHeader.Filename
 	fileExtension := filepath.Ext(fileName)
@@ -71,11 +71,11 @@ func (service *ProductGalleryServiceImpl) Update(ctx context.Context, productGal
 	url := service.Storage.Upload(productGalleryRequest.File, fileName, productGalleryRequest.Id)
 
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productGallery, err := service.ProductGalleryRepository.FindById(ctx, tx, productGalleryRequest.Id)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if productGallery.DeletedAt.Valid {
 		panic("product gallery tidak lagi aktif")
 	}
@@ -90,11 +90,11 @@ func (service *ProductGalleryServiceImpl) Update(ctx context.Context, productGal
 
 func (service *ProductGalleryServiceImpl) Delete(ctx context.Context, productGalleryId string) web.ProductGalleryResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productGallery, err := service.ProductGalleryRepository.FindById(ctx, tx, productGalleryId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if productGallery.DeletedAt.Valid {
 		panic("product gallery tidak lagi aktif")
 	}
@@ -110,11 +110,11 @@ func (service *ProductGalleryServiceImpl) Delete(ctx context.Context, productGal
 
 func (service *ProductGalleryServiceImpl) FindById(ctx context.Context, productGalleryId string) web.ProductGalleryResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productGallery, err := service.ProductGalleryRepository.FindById(ctx, tx, productGalleryId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	if productGallery.DeletedAt.Valid {
 		panic("product gallery tidak lagi aktif")
 	}
@@ -124,7 +124,7 @@ func (service *ProductGalleryServiceImpl) FindById(ctx context.Context, productG
 
 func (service *ProductGalleryServiceImpl) FindAll(ctx context.Context) []web.ProductGalleryResponse {
 	tx, err := service.DB.Begin()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	productGalleries := service.ProductGalleryRepository.FindAll(ctx, tx)

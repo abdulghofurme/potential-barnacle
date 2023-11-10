@@ -61,7 +61,7 @@ func (st *Storage) Upload(file io.Reader, fileName, id string) string {
 	// conditions and data corruptions. The request to update is aborted if the
 	// object's metageneration does not match your precondition.
 	attrs, err := object.Attrs(ctx)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	object = object.If(storage.Conditions{MetagenerationMatch: attrs.Metageneration})
 
 	// Update the object to set the metadata.
@@ -72,7 +72,7 @@ func (st *Storage) Upload(file io.Reader, fileName, id string) string {
 	}
 
 	_, err = object.Update(ctx, objectAttrsToUpdate)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	//   object = object.If(storage.Conditions{DoesNotExist: true})
 	// If the live object already exists in your bucket, set instead a
 	// generation-match precondition using the live object's generation number.
@@ -85,10 +85,10 @@ func (st *Storage) Upload(file io.Reader, fileName, id string) string {
 	// Upload an object with storage.Writer.
 	wc := object.NewWriter(ctx)
 	_, err = io.Copy(wc, file)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	err = wc.Close()
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	url := fmt.Sprintf("https://firebasestorage.googleapis.com/v0/b/%v/o/%v?alt=media&token=%v", object.BucketName(), url.QueryEscape(object.ObjectName()), id)
 	return url

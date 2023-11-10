@@ -18,7 +18,7 @@ type ProductRepositoryImpl struct{}
 func (repository *ProductRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, product domain.Product) domain.Product {
 	SQL := `insert into products(id, name, price, description, tags, category_id) values(?, ?, ?, ?, ?, ?)`
 	_, err := tx.ExecContext(ctx, SQL, product.Id, product.Name, product.Price, product.Description, product.Tags, product.CategoryId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	product, _ = repository.FindById(ctx, tx, product.Id)
 
@@ -28,7 +28,7 @@ func (repository *ProductRepositoryImpl) Create(ctx context.Context, tx *sql.Tx,
 func (repository *ProductRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, product domain.Product) domain.Product {
 	SQL := `update products set name=?, price=?, description=?, tags=?, category_id=?, updated_at=? where id=?`
 	_, err := tx.ExecContext(ctx, SQL, product.Name, product.Price, product.Description, product.Tags, product.CategoryId, product.UpdatedAt, product.Id)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	return product
 }
@@ -36,7 +36,7 @@ func (repository *ProductRepositoryImpl) Update(ctx context.Context, tx *sql.Tx,
 func (repository *ProductRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, product domain.Product) {
 	SQL := `update products set deleted_at=? where id=?`
 	_, err := tx.ExecContext(ctx, SQL, product.DeletedAt.Time, product.Id)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 }
 
 func (repository *ProductRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, productId string) (domain.Product, error) {
@@ -46,7 +46,7 @@ func (repository *ProductRepositoryImpl) FindById(ctx context.Context, tx *sql.T
 	from products p join product_categories pc on p.category_id=pc.id 
 	where p.id=?`
 	rows, err := tx.QueryContext(ctx, SQL, productId)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer rows.Close()
 
 	product := domain.Product{
@@ -65,7 +65,7 @@ func (repository *ProductRepositoryImpl) FindById(ctx context.Context, tx *sql.T
 			&product.Category.Id,
 			&product.Category.Name,
 		)
-		helper.PanicIfErrof(err)
+		helper.PanicIfError(err)
 
 		return product, nil
 	}
@@ -81,7 +81,7 @@ func (repository *ProductRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx
 	from products p join product_categories pc on p.category_id=pc.id 
 	where p.deleted_at is null`
 	rows, err := tx.QueryContext(ctx, SQL)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 	defer rows.Close()
 
 	var products []domain.Product
@@ -102,7 +102,7 @@ func (repository *ProductRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx
 			&product.Category.Id,
 			&product.Category.Name,
 		)
-		helper.PanicIfErrof(err)
+		helper.PanicIfError(err)
 
 		products = append(products, product)
 	}

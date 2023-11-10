@@ -10,7 +10,7 @@ import (
 
 func NewDB() *sql.DB {
 	db, err := sql.Open("mysql", config.MyEnv.DB_MYSQL_DSN)
-	helper.PanicIfErrof(err)
+	helper.PanicIfError(err)
 
 	db.SetMaxIdleConns(3)
 	db.SetMaxOpenConns(10)
